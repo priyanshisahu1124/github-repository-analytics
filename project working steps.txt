@@ -1,0 +1,181 @@
+Starting steps
+1. Activate environment
+source venv/Scripts/activate
+
+2. Extract data
+python src/extract.py
+
+3. Transform data
+python src/transform.py
+
+4. Load data into DuckDB
+python src/load.py
+
+5. Start dashboard
+python -m streamlit run app.py
+
+url = "https://api.github.com/search/repositories?q=python&sort=stars&per_page=100"
+
+Option 1: Search repositories by a different topic ⭐
+
+Currently, you have:
+
+url = "https://api.github.com/search/repositories?q=python&sort=stars&per_page=100"
+
+Example: Java repositories
+url = "https://api.github.com/search/repositories?q=java&sort=stars&per_page=100"
+
+Example: Machine Learning repositories
+url = "https://api.github.com/search/repositories?q=machine-learning&sort=stars&per_page=100"
+
+Example: Data Engineering repositories
+url = "https://api.github.com/search/repositories?q=data-engineering&sort=stars&per_page=100"
+
+Then run the pipeline again:
+
+python src/extract.py
+python src/transform.py
+python src/load.py
+
+
+Option 3: Let the User Choose What to Search 🔥
+
+This is the best improvement for your Streamlit project.
+
+Instead of fixing the query as python, you can make the API query changeable.
+
+import requests
+import json
+import os
+
+
+# GitHub API URL
+url = "https://github.com/Pri22yanshisahu/CPP-CLASS"
+
+
+# Send request to GitHub API
+response = requests.get(url)
+
+
+# Check whether the request was successful
+if response.status_code == 200:
+
+    # Convert API response into JSON
+    data = response.json()
+
+    # Get repository data from "items"
+    repositories = data["items"]
+
+    # Create data/raw folder if it does not exist
+    os.makedirs("data/raw", exist_ok=True)
+
+    # Save the repository data in a JSON file
+    with open(
+        "data/raw/repositories.json",
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(repositories, file, indent=4)
+
+    print("Data extracted successfully!")
+    print("Total repositories collected:", len(repositories))
+
+else:
+    print("Error while fetching data.")
+    print("Status Code:", response.status_code)
+
+
+
+In extract.py, change:
+
+
+url = "https://api.github.com/search/repositories?q=python&sort=stars&per_page=100"
+
+to:
+
+topic = "data-engineering"
+
+url = f"https://api.github.com/search/repositories?q={topic}&sort=stars&per_page=100"
+
+Now you can change only:
+
+topic = "data-engineering"
+
+to:
+
+topic = "machine-learning"
+
+or:
+
+topic = "java"
+
+Even Better: Ask for User Input
+
+You can use:
+
+import requests
+import json
+import os
+
+
+topic = input("Enter a topic to search GitHub repositories: ")
+
+url = f"https://api.github.com/search/repositories?q={topic}&sort=stars&per_page=100"
+
+response = requests.get(url)
+
+if response.status_code == 200:
+
+    data = response.json()
+
+    repositories = data["items"]
+
+    os.makedirs("data/raw", exist_ok=True)
+
+    with open(
+        "data/raw/repositories.json",
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(repositories, file, indent=4)
+
+    print("Data extracted successfully!")
+    print("Total repositories collected:", len(repositories))
+
+else:
+    print("Error:", response.status_code)
+
+
+When you run:
+
+python src/extract.py
+
+It will ask:
+
+Enter a topic to search GitHub repositories:
+
+You can enter:
+
+data engineering
+
+or:
+
+machine learning
+
+or:
+
+python
+
+My Recommendation
+
+For your project, use Option 3 because it makes the project more interactive and flexible.
+Your project will then be able to analyze repositories related to any topic, such as:
+
+Python
+Java
+Data Engineering
+Machine Learning
+Artificial Intelligence
+Web Development
